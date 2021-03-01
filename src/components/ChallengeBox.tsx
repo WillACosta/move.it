@@ -1,30 +1,44 @@
+import { useContext } from "react";
+import { challengesContext } from "../contexts/ChallengesContext";
+import { CountdownContext } from "../contexts/CountdownContext";
+
 import styles from "../styles/components/ChallengeBox.module.css";
 
 export default function ChallengeBox() {
+  const { activeChallenge, resetChallenge, completeChallenge } = useContext(challengesContext);
+  const { resetCountdown } = useContext(CountdownContext);
 
-  const hasChallenge = true;
+  function handleChallengeSucceeded() {
+    completeChallenge();
+    resetCountdown();
+  }
+
+  function handleChallengeFailed() {
+    resetChallenge();
+    resetCountdown();
+  }
 
   return (
     <div className={styles.container}>
-      { hasChallenge ? (
+      { activeChallenge ? (
         <div className={styles.active}>
-          <header>Ganhe 400XP</header>
+          <header>Ganhe {activeChallenge.amount}XP</header>
           <main>
-            <img src="icons/body.svg" alt="" />
+            <img src={`icons/${activeChallenge.type}.svg`} alt="" />
             <strong>Novo desafio</strong>
-            <p>Levante e faça uma caminhada de 3 minutos</p>
+            <p>{activeChallenge.description}</p>
           </main>
 
           <footer>
             <button
               type="button"
               className={styles.failedButton}
-              onClick={null}
+              onClick={handleChallengeFailed}
             >Falhei</button>
             <button
               type="button"
               className={styles.succeededButton}
-              onClick={null}
+              onClick={handleChallengeSucceeded}
             >Completei</button>
           </footer>
         </div>
@@ -36,7 +50,7 @@ export default function ChallengeBox() {
               </strong>
               <p>
                 <img src="icons/level-up.svg" alt="Nível Acima" />
-                AVance de nível completando os desafios
+                Avance de nível completando os desafios
               </p>
             </div>
           </>

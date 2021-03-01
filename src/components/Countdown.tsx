@@ -1,44 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { challengesContext } from "../contexts/ChallengesContext";
 
 import styles from "../styles/components/Countdown.module.css";
-
-let countdownTimeout: NodeJS.Timeout;
+import { CountdownContext } from '../contexts/CountdownContext';
 
 export function Countdown() {
 
-  /** Estatdos  */
-  const [time, setTime] = useState(25 * 60); // Tempo de 25 minutos em segundos
-  const [isActive, setIsActive] = useState(false);
-  const [hasFinished, setFinished] = useState(false);
-
-  const minutes = Math.floor(time / 60); // Obtém o valor inteiro de minutos (Arredonda pra baixo)
-  const seconds = time % 60; // Obtem o restante da divisão
+  const { minutes, seconds, hasFinished, isActive, resetCountdown, startCountdown } = useContext(CountdownContext);
 
   const [minuteStart, minuteEnd] = String(minutes).padStart(2, '0').split('');
   /* Preenche a string com o valor 0 caso não haja dois valores obtidos no split */
 
   const [secondStart, secondEnd] = String(seconds).padStart(2, '0').split('');
 
-  function startCountdown() {
-    setIsActive(true);
-  }
-
-  function resetCountdown() {
-    clearTimeout(countdownTimeout);
-    setIsActive(false);
-    setTime(25 * 60);
-  }
-
-  useEffect(() => {
-    if (isActive && time > 0) {
-      countdownTimeout = setTimeout(() => {
-        setTime(time - 1);
-      }, 1000);
-    } else if (isActive && time === 0) {
-      setFinished(true);
-      setIsActive(false);
-    }
-  }, [isActive, time]); // Executa uma função sempre que os valores mudarem
 
   return (
     <div>
